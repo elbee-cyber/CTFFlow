@@ -1,0 +1,99 @@
+#!/bin/bash
+
+
+#		CONFIGURE ME!
+###Customize to make dirs from a given file###
+
+useFile=false #set to true to activate
+pathToFile="/home/"`whoami`"/ctfflowPremade" #change this if you want
+
+##############################################
+
+
+
+
+
+pathToSpace=$1
+if [ "$pathToSpace" = "edit" ]; then
+	vim `which makespace`
+	exit 1
+fi
+if [ "$pathToSpace" = "clean" ]; then
+	rm `pwd`/Tools -rf
+	exit 1
+fi
+create(){
+	mkdir $pathToSpace'/'$1
+}
+
+echo ""
+echo ""
+echo "               ()__ 	   "
+echo "               ||==Z__	   "
+echo "               ||==|===Z____ "
+echo "               ||==|===|====|"
+echo "               ||==|===|====|"
+echo "               ||==|===|====|"
+echo "               ||  '---|====|"
+echo "               ||      '----'"
+echo ""
+echo " CTFFlow | Organization is key! | @elbee_ez     "
+echo "		Happy workflow, happy life.		"
+echo ""
+echo ""
+
+if [[ $(echo $@ | grep " ") ]]; then
+	if [ -d "$1" ]; then
+		echo "Creating dirs in $pathToSpace"
+	else
+		echo "Invalid path specified!"
+		exit 1
+	fi
+	for i; do 
+		if [ "$i" = "$1" ]; then
+			continue
+		fi
+    		create $i 
+	done
+else
+	if [ "$useFile" = true ] && [ "$1" ]; then
+		echo "Creating dirs from file in $pathToSpace"
+		while read line; do create $line; done < $pathToFile
+	else
+		echo "===================================================================================================================="
+		echo "				Usuage: makespace <path to base> <dir1> <dir2> <dir3>....	"
+		echo " 				Usuage if useFile=true: makespace <path to base>                "
+		echo "		                          To edit: makespace edit                                       "
+		echo " 	If you are cloning the tools using this script, then makespace clean to delete them when you are finished."
+		echo " 			Make sure you are in the correct directory before running clean.                   "
+		echo "===================================================================================================================="
+		exit 1
+	fi
+fi
+echo ""
+echo ""
+
+cd $pathToSpace
+
+# This is more for me..remove lines after this comment if you want. BTW thanks Tib3rius for the awesome list: https://github.com/Tib3rius 
+# https://github.com/Tib3rius/Windows-PrivEsc-Tools
+# https://github.com/Tib3rius/Linux-PrivEsc-Tools
+
+if [ -d "$pathToSpace/Tools" ]; then
+	cd $pathToSpace/Tools
+	git clone https://github.com/Tib3rius/Windows-PrivEsc-Tools
+	cd Windows-PrivEsc-Tools
+	cat tools.zip* > tools.zip
+	unzip tools.zip
+	rm tools.zip
+	rm tools.zip.001
+	rm tools.zip.002
+	cd $pathToSpace/Tools
+	git clone https://github.com/Tib3rius/Linux-PrivEsc-Tools
+	cd Linux-PrivEsc-Tools/
+	unzip *
+	rm tools.zip
+fi
+
+cd $pathToSpace
+
